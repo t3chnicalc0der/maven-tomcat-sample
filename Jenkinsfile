@@ -2,38 +2,39 @@ pipeline {
     agent { label 'slave-1' } 
     
     tools {
-        jdk 'jdk17'
+        jdk 'jdk17'  // This should match the name of your configured JDK in Jenkins
         maven 'maven3'
     } 
 
     stages {
-        stage('Preparation') {
+        stage('Check Environment') {
             steps {
-                echo "Preparing to build on agent: ${env.NODE_NAME}"
-                echo "JAVA_HOME: ${env.JAVA_HOME}"
-                echo "MAVEN_HOME: ${env.MAVEN_HOME}"
+                script {
+                    // Print JAVA_HOME set by Jenkins tool
+                    echo "JAVA_HOME: ${env.JAVA_HOME}"
+                    sh 'java -version'
+                    sh 'which java'
+                }
             }
         }
 
         stage('Compile') {
             steps {
-                echo 'Compiling the project...'
-                sh 'mvn compile'
+                sh "mvn compile"
             }
         }
         
         stage('Tests') {
             steps {
-                echo 'Running tests...'
-                sh 'mvn test'
+                sh "mvn test"
             }
         }
         
         stage('Build') {
             steps {
-                echo 'Building the project...'
-                sh 'mvn package'
+                sh "mvn package"
             }
         }
     }
 }
+
