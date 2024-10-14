@@ -1,5 +1,5 @@
- pipeline {     
-    agent {label 'slave-1'} 
+pipeline {     
+    agent { label 'slave-1' } 
     
     tools {
         jdk 'jdk17'
@@ -7,23 +7,32 @@
     } 
 
     stages {
-        
-         
+        stage('Preparation') {
+            steps {
+                echo "Preparing to build on agent: ${env.NODE_NAME}"
+                echo "JAVA_HOME: ${env.JAVA_HOME}"
+                echo "MAVEN_HOME: ${env.MAVEN_HOME}"
+            }
+        }
+
         stage('Compile') {
             steps {
-            sh  "mvn compile"
+                echo 'Compiling the project...'
+                sh 'mvn compile'
             }
         }
         
-        stage('tests') {
+        stage('Tests') {
             steps {
-                sh "mvn test"
+                echo 'Running tests...'
+                sh 'mvn test'
             }
         }
         
         stage('Build') {
             steps {
-                sh "mvn package"
+                echo 'Building the project...'
+                sh 'mvn package'
             }
         }
     }
