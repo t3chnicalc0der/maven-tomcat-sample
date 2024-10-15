@@ -2,7 +2,7 @@ pipeline {
     agent { label 'slave-1' } 
     
     tools {
-        jdk 'jdk17'  // This should match the name of your configured JDK in Jenkins
+        jdk 'jdk17'  // Ensure this matches the configured JDK name in Jenkins
         maven 'maven3'
     } 
 
@@ -37,4 +37,3 @@ pipeline {
         }
     }
 }
-
