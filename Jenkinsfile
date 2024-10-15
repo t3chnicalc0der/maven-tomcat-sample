@@ -1,29 +1,42 @@
- pipeline {    
-    agent any 
+pipeline {     
+    agent { label 'slave-1' } 
     
     tools {
-        jdk 'jdk17'
+        jdk 'jdk17'  // Ensure this matches the configured JDK name in Jenkins
         maven 'maven3'
-    }
+    } 
 
     stages {
-       
-        
+        stage('Check Environment') {
+            steps {
+                script {
+                    // Manually set JAVA_HOME to the correct JDK path
+                    env.JAVA_HOME = "/home/ubuntu/jenkins-workspace/tools/hudson.model.JDK/jdk17"
+                    echo "JAVA_HOME: ${env.JAVA_HOME}"
+                    sh 'java -version'
+                    sh 'which java'
+                }
+            }
+        }
+
         stage('Compile') {
             steps {
-            sh  "mvn compile"
+                script {
+                    // Ensure JAVA_HOME is properly exported before running Maven
+                    sh 'export JAVA_HOME=/home/ubuntu/jenkins-workspace/tools/hudson.model.JDK/jdk17 && mvn compile'
+                }
             }
         }
         
-        stage('tests') {
+        stage('Tests') {
             steps {
-                sh "mvn test"
+                sh "export JAVA_HOME=/home/ubuntu/jenkins-workspace/tools/hudson.model.JDK/jdk17 && mvn test"
             }
         }
         
         stage('Build') {
             steps {
-                sh "mvn package"
+                sh "export JAVA_HOME=/home/ubuntu/jenkins-workspace/tools/hudson.model.JDK/jdk17 && mvn package"
             }
         }
     }
