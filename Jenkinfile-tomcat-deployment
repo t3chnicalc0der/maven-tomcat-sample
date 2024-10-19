@@ -1,0 +1,33 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Git checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/jaiswaladi2468/TC.git'
+            }
+        }
+        stage('Compile') {
+            steps {
+                sh "mvn compile"
+            }
+         }
+        
+          stage('Tests') {
+            steps {
+                sh "mvn test"
+            }
+         }
+           stage('Package') {
+            steps {
+                sh "mvn clean package"
+            }
+         }
+            stage('Deploy') {
+             steps {
+               deploy adapters: [tomcat9(credentialsId: 'tomcat-cred', path: '', url: 'http://54.157.194.178:8081/')], contextPath: 'Planview', onFailure: false, war: 'target/*.war'
+            }
+         }
+         
+    }
+}
